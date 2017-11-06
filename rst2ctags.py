@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 # Copyright (C) 2013-2017 John Szakmeister <john@szakmeister.net>
 # All rights reserved.
@@ -8,6 +8,8 @@
 
 from __future__ import absolute_import
 from __future__ import print_function
+from __future__ import unicode_literals
+from functools import total_ordering
 import sys
 import re
 
@@ -33,6 +35,7 @@ def ctagSearchEscape(str):
     return str
 
 
+@total_ordering
 class Tag(object):
     def __init__(self, tagName, tagFile, tagAddress):
         self.tagName = tagName
@@ -59,13 +62,13 @@ class Tag(object):
         tag = '%s\t%s\t%s;"\t%s' % (
             self.tagName, self.tagFile, self.tagAddress,
             self._formatFields())
-        if isinstance(tag, unicode):
-            return tag.encode('utf-8')
-        else:
-            return tag
+        return tag
 
-    def __cmp__(self, other):
-        return cmp(str(self), str(other))
+    def __eq__(self, other):
+        return str(self) == str(other)
+
+    def __lt__(self, other):
+        return str(self) < str(other)
 
     @staticmethod
     def section(section):
